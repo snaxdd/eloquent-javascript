@@ -1,14 +1,13 @@
-let simpleLevelPlan = [
-  '                ',
-  '                ',
-  ' x          = x ',
-  ' x     o o    x ',
-  ' x @  xxxxx   x ',
-  ' xxxxx        x ',
-  ' x!!!!!!!!!!!!x ',
-  ' xxxxxxxxxxxxxx ',
-  '                ',
-];
+let simpleLevelPlan = `
+......................
+..#................#..
+..#..............=.#..
+..#.........o.o....#..
+..#.@......#####...#..
+..#####............#..
+......#++++++++++++#..
+......##############..
+......................`;
 
 class Level {
   constructor(plan) {
@@ -63,3 +62,73 @@ class Vec {
     return new Vec(this.x + factor, this.y + factor);
   }
 }
+
+class Player {
+  constructor(pos, speed) {
+    this.pos = pos;
+    this.speed = speed;
+  }
+
+  static create(pos) {
+    return new Player(pos.plus(new Vec(0, -0.5)), new Vec(0, 0));
+  }
+
+  get type() {
+    return 'player';
+  }
+}
+
+Player.prototype.size = new Vec(0.8, 1.5);
+
+class Lava {
+  constructor(pos, speed, reset) {
+    this.pos = pos;
+    this.speed = speed;
+    this.reset = reset;
+  }
+
+  static create(pos, ch) {
+    if (ch === '=') {
+      return new Lava(pos, new Vec(2, 0));
+    } else if (ch === '|') {
+      return new Lava(pos, new Vec(0, 2));
+    } else if (ch === 'v') {
+      return new Lava(pos, new Vec(0, 3), pos);
+    }
+  }
+
+  get type() {
+    return 'lava';
+  }
+}
+
+Lava.prototype.size = new Vec(1, 1);
+
+class Coin {
+  constructor(pos, basePos, wobble) {
+    this.pos = pos;
+    this.basePos = basePos;
+    this.wobble = wobble;
+  }
+
+  static create(pos) {
+    let basePos = pos.plus(new Vec(0.2, 0.1));
+    return new Coin(basePos, basePos, Math.random() * Math.PI * 2);
+  }
+}
+
+Coin.prototype.size = new Vec(0.6, 0.6);
+
+const levelChars = {
+  '.': 'empty',
+  '#': 'wall',
+  '+': 'lava',
+  '@': Player,
+  o: Coin,
+  '=': Lava,
+  '|': Lava,
+  v: Lava,
+};
+
+let simpleLevel = new Level(simpleLevelPlan);
+console.log(`${simpleLevel.width} by ${simpleLevel.height}`);
