@@ -117,6 +117,10 @@ class Coin {
     let basePos = pos.plus(new Vec(0.2, 0.1));
     return new Coin(basePos, basePos, Math.random() * Math.PI * 2);
   }
+
+  get type() {
+    return 'coin';
+  }
 }
 
 Coin.prototype.size = new Vec(0.6, 0.6);
@@ -172,8 +176,8 @@ function drawActors(actors) {
       let rect = elt('div', { class: `actor ${actor.type}` });
       rect.style.width = `${actor.size.x * scale}px`;
       rect.style.height = `${actor.size.y * scale}px`;
-      rect.style.left = `${actor.size.x * scale}px`;
-      rect.style.top = `${actor.size.y * scale}px`;
+      rect.style.left = `${actor.pos.x * scale}px`;
+      rect.style.top = `${actor.pos.y * scale}px`;
       return rect;
     })
   );
